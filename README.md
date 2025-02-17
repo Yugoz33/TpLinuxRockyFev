@@ -136,12 +136,47 @@ udp   UNCONN 0      0              [::1]:323          [::]:*    users:(("chronyd
    
 🌞 Pour chacun des ports précédemment repérés...
 ```
-
+[hugo@efrei-xmg4agau1 ~]$ sudo firewall-cmd --list-all
+[sudo] password for hugo:
+public (active)
+  target: default
+  icmp-block-inversion: no
+  interfaces: enp0s3 enp0s8
+  sources:
+  services: cockpit dhcpv6-client ssh
+  ports:
+  protocols:
+  forward: yes
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
 ```
 
 🌞 Fermez tous les ports inutilement ouverts dans le firewall
 ```
-
+[hugo@efrei-xmg4agau1 ~]$ sudo firewall-cmd --remove-service cockpit
+success
+[hugo@efrei-xmg4agau1 ~]$ sudo firewall-cmd --remove-service dhcpv6-client
+success
+[hugo@efrei-xmg4agau1 ~]$ sudo firewall-cmd --remove-service ssh
+success
+[hugo@efrei-xmg4agau1 ~]$ sudo firewall-cmd --list-all
+public (active)
+  target: default
+  icmp-block-inversion: no
+  interfaces: enp0s3 enp0s8
+  sources:
+  services:
+  ports:
+  protocols:
+  forward: yes
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
 ```
 
 
