@@ -121,7 +121,9 @@ Firmware Version: VirtualBox
    
 🌞 Déterminer la liste des programmes qui écoutent sur un port TCP
 ```
-
+[hugo@efrei-xmg4agau1 ~]$ sudo ss -tulnp | grep 'tcp'
+tcp   LISTEN 0      128          0.0.0.0:22        0.0.0.0:*    users:(("sshd",pid=719,fd=3))
+tcp   LISTEN 0      128             [::]:22           [::]:*    users:(("sshd",pid=719,fd=4))
 ```
 
 🌞 Déterminer la liste des programmes qui écoutent sur un port UDP
