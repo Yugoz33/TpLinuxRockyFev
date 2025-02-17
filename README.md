@@ -30,10 +30,17 @@ sr0          11:0    1 1024M  0 rom
 ```
 
 🌞 Prouvez que votre utilisateur est bien dans le groupe wheel
-
+```
+[hugo@efrei-xmg4agau1 ~]$ groups
+hugo wheel
+```
 
 🌞 Prouvez que la langue configurée pour l'OS est bien l'anglais
+```
 
+```
 
 🌞 Prouvez que le firewall est déjà actif
+```
 
+```
