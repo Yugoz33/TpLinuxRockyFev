@@ -70,27 +70,82 @@ Part II : Networking
 1. Basic networking conf
  A Static IP
 🌞 Attribuer l'adresse IP 10.1.1.11/24 à la VM
-
+```
+[hugo@efrei-xmg4agau1 ~]$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:b6:06:87 brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global dynamic noprefixroute enp0s3
+       valid_lft 84718sec preferred_lft 84718sec
+    inet6 fe80::a00:27ff:feb6:687/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:9e:b1:f3 brd ff:ff:ff:ff:ff:ff
+    inet 10.1.1.11/24 brd 10.1.1.255 scope global noprefixroute enp0s8
+       valid_lft forever preferred_lft forever
+    inet6 fe80::a00:27ff:fe9e:b1f3/64 scope link
+       valid_lft forever preferred_lft forever
+```
 
 B. Hostname
 🌞 Attribuer le nom node1.tp1.b3 à la VM
+```
 
+```
 
 
 2. Listening ports
 🌞 Déterminer la liste des programmes qui écoutent sur un port TCP
+```
 
+```
 
 🌞 Déterminer la liste des programmes qui écoutent sur un port UDP
+```
 
+```
 3. Firewalling
 🌞 Pour chacun des ports précédemment repérés...
+```
 
+```
 
 🌞 Fermez tous les ports inutilement ouverts dans le firewall
+```
 
+```
 
 
 🌞 Pour toutes les applications qui sont en écoute sur TOUTES les adresses IP
+```
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
