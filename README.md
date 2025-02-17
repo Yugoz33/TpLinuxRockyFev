@@ -59,3 +59,34 @@ Feb 17 08:04:25 localhost systemd[1]: Starting firewalld - dynamic firewall>
 Feb 17 08:04:26 localhost systemd[1]: Started firewalld - dynamic firewall >
 lines 1-13/13 (END)
 ```
+
+Part II : Networking
+Le réseau c'est la porte d'entrée pour toutes les autres machines. C'est le seul moyen d'être attaqué à distance.
+Maîtriser au mieux le réseau d'une machine est donc primordial pour prétendre en renforcer la sécurité.
+
+
+Part II : Networking
+
+
+🌞 Attribuer l'adresse IP 10.1.1.11/24 à la VM
+
+
+🌞 Attribuer le nom node1.tp1.b3 à la VM
+
+
+🌞 Déterminer la liste des programmes qui écoutent sur un port TCP
+
+
+🌞 Déterminer la liste des programmes qui écoutent sur un port UDP
+
+
+🌞 Pour chacun des ports précédemment repérés...
+
+
+🌞 Fermez tous les ports inutilement ouverts dans le firewall
+
+
+
+🌞 Pour toutes les applications qui sont en écoute sur TOUTES les adresses IP
+
+
