@@ -95,7 +95,22 @@ Part II : Networking
 B. Hostname
 🌞 Attribuer le nom node1.tp1.b3 à la VM
 ```
-
+[hugo@efrei-xmg4agau1 ~]$ sudo hostnamectl set-hostname node1.tp1.b3
+[sudo] password for hugo:
+[hugo@efrei-xmg4agau1 ~]$ hostnamectl status
+ Static hostname: node1.tp1.b3
+       Icon name: computer-vm
+         Chassis: vm 🖴
+      Machine ID: 940f3e6c47fa4a3e862f2be4588fb79d
+         Boot ID: 79341a9a6b7540c6ab1b068aca00dfb4
+  Virtualization: oracle
+Operating System: Rocky Linux 9.5 (Blue Onyx)
+     CPE OS Name: cpe:/o:rocky:rocky:9::baseos
+          Kernel: Linux 5.14.0-503.23.2.el9_5.x86_64
+    Architecture: x86-64
+ Hardware Vendor: innotek GmbH
+  Hardware Model: VirtualBox
+Firmware Version: VirtualBox
 ```
 
 
