@@ -67,19 +67,23 @@ Maîtriser au mieux le réseau d'une machine est donc primordial pour prétendre
 
 Part II : Networking
 
-
+1. Basic networking conf
+ A Static IP
 🌞 Attribuer l'adresse IP 10.1.1.11/24 à la VM
 
 
+B. Hostname
 🌞 Attribuer le nom node1.tp1.b3 à la VM
 
 
+
+2. Listening ports
 🌞 Déterminer la liste des programmes qui écoutent sur un port TCP
 
 
 🌞 Déterminer la liste des programmes qui écoutent sur un port UDP
 
-
+3. Firewalling
 🌞 Pour chacun des ports précédemment repérés...
 
 
