@@ -23,7 +23,11 @@ sr0          11:0    1 1024M  0 rom
 ```
 
 🌞 Mettre en évidence la ligne de configuration sudo qui concerne le groupe wheel
-
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo cat /etc/sudoers | grep '%wheel'
+%wheel  ALL=(ALL)       ALL
+# %wheel        ALL=(ALL)       NOPASSWD: ALL
+```
 
 🌞 Prouvez que votre utilisateur est bien dans le groupe wheel
 
