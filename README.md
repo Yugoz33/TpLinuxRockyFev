@@ -68,7 +68,9 @@ Maîtriser au mieux le réseau d'une machine est donc primordial pour prétendre
 Part II : Networking
 
 1. Basic networking conf
+
  A Static IP
+
 🌞 Attribuer l'adresse IP 10.1.1.11/24 à la VM
 ```
 [hugo@efrei-xmg4agau1 ~]$ ip a
@@ -93,6 +95,7 @@ Part II : Networking
 ```
 
 B. Hostname
+
 🌞 Attribuer le nom node1.tp1.b3 à la VM
 ```
 [hugo@efrei-xmg4agau1 ~]$ sudo hostnamectl set-hostname node1.tp1.b3
@@ -115,6 +118,7 @@ Firmware Version: VirtualBox
 
 
 2. Listening ports
+   
 🌞 Déterminer la liste des programmes qui écoutent sur un port TCP
 ```
 
@@ -125,6 +129,7 @@ Firmware Version: VirtualBox
 
 ```
 3. Firewalling
+   
 🌞 Pour chacun des ports précédemment repérés...
 ```
 
