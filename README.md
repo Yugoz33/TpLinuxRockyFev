@@ -43,9 +43,19 @@ en_US.UTF-8
 
 🌞 Prouvez que le firewall est déjà actif
 ```
-[hugo@efrei-xmg4agau1 ~]$ sudo firewall-cmd
-State: running
+[hugo@efrei-xmg4agau1 ~]$ sudo systemctl status firewalld
+● firewalld.service - firewalld - dynamic firewall daemon
+     Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled; pr>
+     Active: active (running) since Mon 2025-02-17 08:04:26 EST; 22min ago
+       Docs: man:firewalld(1)
+   Main PID: 684 (firewalld)
+      Tasks: 2 (limit: 11092)
+     Memory: 45.5M
+        CPU: 559ms
+     CGroup: /system.slice/firewalld.service
+             └─684 /usr/bin/python3 -s /usr/sbin/firewalld --nofork --nopid
 
-No options specified
-usage: 'firewall-cmd --help' for usage information or see firewall-cmd(1) man page
+Feb 17 08:04:25 localhost systemd[1]: Starting firewalld - dynamic firewall>
+Feb 17 08:04:26 localhost systemd[1]: Started firewalld - dynamic firewall >
+lines 1-13/13 (END)
 ```
