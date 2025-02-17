@@ -8,6 +8,19 @@ Part I : Rocky install
 
 🌞 Prouvez que le schéma de partitionnement a bien été appliqué
 
+```[hugo@efrei-xmg4agau1 ~]$ lsdsk
+-bash: lsdsk: command not found
+[hugo@efrei-xmg4agau1 ~]$ lsblk
+NAME        MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+sda           8:0    0   30G  0 disk
+├─sda1        8:1    0    1G  0 part /boot
+└─sda2        8:2    0   21G  0 part
+  ├─rl-root 253:0    0   10G  0 lvm  /
+  ├─rl-swap 253:1    0    1G  0 lvm  [SWAP]
+  ├─rl-var  253:2    0    5G  0 lvm  /var
+  └─rl-home 253:3    0    5G  0 lvm  /home
+sr0          11:0    1 1024M  0 rom
+```
 
 🌞 Mettre en évidence la ligne de configuration sudo qui concerne le groupe wheel
 
