@@ -37,7 +37,8 @@ hugo wheel
 
 🌞 Prouvez que la langue configurée pour l'OS est bien l'anglais
 ```
-
+[hugo@efrei-xmg4agau1 ~]$ echo $LANG
+en_US.UTF-8
 ```
 
 🌞 Prouvez que le firewall est déjà actif
