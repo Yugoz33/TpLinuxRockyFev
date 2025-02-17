@@ -128,7 +128,9 @@ tcp   LISTEN 0      128             [::]:22           [::]:*    users:(("sshd",p
 
 🌞 Déterminer la liste des programmes qui écoutent sur un port UDP
 ```
-
+[hugo@efrei-xmg4agau1 ~]$ sudo ss -tulnp | grep 'udp'
+udp   UNCONN 0      0          127.0.0.1:323       0.0.0.0:*    users:(("chronyd",pid=687,fd=5))
+udp   UNCONN 0      0              [::1]:323          [::]:*    users:(("chronyd",pid=687,fd=6))
 ```
 3. Firewalling
    
