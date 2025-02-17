@@ -43,6 +43,9 @@ en_US.UTF-8
 
 🌞 Prouvez que le firewall est déjà actif
 ```
-[hugo@efrei-xmg4agau1 ~]$ sudo firewall-cmd --state
-running
+[hugo@efrei-xmg4agau1 ~]$ sudo firewall-cmd
+State: running
+
+No options specified
+usage: 'firewall-cmd --help' for usage information or see firewall-cmd(1) man page
 ```
