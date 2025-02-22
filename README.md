@@ -181,7 +181,19 @@ public (active)
 
 
 🌞 Pour toutes les applications qui sont en écoute sur TOUTES les adresses IP
+
+dans /etc/ssh/sshd_config
+
 ```
+ListenAddress 10.1.1.11
+```
+
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo ss -tulnp
+Netid   State    Recv-Q   Send-Q       Local Address:Port       Peer Address:Port   Process
+udp     UNCONN   0        0                127.0.0.1:323             0.0.0.0:*       users:(("chronyd",pid=687,fd=5))
+udp     UNCONN   0        0                    [::1]:323                [::]:*       users:(("chronyd",pid=687,fd=6))
+tcp     LISTEN   0        128              10.1.1.11:22              0.0.0.0:*       users:(("sshd",pid=1407,fd=3))
 
 ```
 
