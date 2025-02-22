@@ -501,17 +501,85 @@ hugo ALL=(ALL)  NOPASSWD:ALL
 ```
 
 
+C. Hackers gonna hack
+🌞 Déjà une configuration faible ?
+
+```
+[meow@node1 ~]$ sudo -u hugo /bin/less /etc/profile
+
+# puis taper `v` pour ouvrir l'editeur et puis `:shell` pour pop un shell
+
+[hugo@efrei-xmg4agau1 meow]$ whoami
+hugo
+
+```
+
+```
+meow ALL=(meow) NOPASSWD: /bin/ls, /bin/cat, /bin/less, /bin/more
+```
 
 
+2. Files and permissions
+🌞 Déterminer les permissions des fichiers/dossiers...
+
+```
+[hugo@efrei-xmg4agau1 ~]$ ls -l /etc/passwd
+-rw-r--r--. 1 root root 1014 Feb 18 10:20 /etc/passwd
+[hugo@efrei-xmg4agau1 ~]$ ls -l /etc/shadow
+----------. 1 root root 756 Feb 18 10:20 /etc/shadow
+[hugo@efrei-xmg4agau1 ~]$ ls -l /etc/ssh/sshd_config
+-rw-------. 1 root root 3668 Feb 17 15:26 /etc/ssh/sshd_config
+[hugo@efrei-xmg4agau1 ~]$ ls -ld /root
+dr-xr-x---. 3 root root 4096 Feb 18 10:35 /root
+[hugo@efrei-xmg4agau1 ~]$ ls -ld $home
+drwx------. 2 bingo bingo 4096 Feb 17 15:59 .
+[hugo@efrei-xmg4agau1 ~]$ ls -l /usr/bin/ls
+-rwxr-xr-x. 1 root root 140952 Nov  6 17:29 /usr/bin/ls
+[hugo@efrei-xmg4agau1 ~]$ ls -l /usr/bin/systemctl
+-rwxr-xr-x. 1 root root 305744 Nov 16 02:22 /usr/bin/systemctl
+```
 
 
+B. Protect a file using permissions
+🌞 Restreindre l'accès à un fichier personnel
+```
+[hugo@efrei-xmg4agau1 ~]$ mkdir TP
+[hugo@efrei-xmg4agau1 ~]$ ls
+bigfile  TP
+[hugo@efrei-xmg4agau1 ~]$ echo "test" > TP/dont_readme.txt
+[hugo@efrei-xmg4agau1 ~]$ ls
+bigfile  TP
+[hugo@efrei-xmg4agau1 ~]$ cd TP
+[hugo@efrei-xmg4agau1 ~]$ ls
+dont_readme.txt
+```
+
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo -u meow cat TP/dont_readme.txt
+cat: TP/dont_readme.txt: Permission denied
+[hugo@efrei-xmg4agau1 ~]$ sudo cat TP/dont_readme.txt
+test
+```
 
 
+C. Extended attributes
+🌞 Lister tous les programmes qui ont le bit SUID activé
 
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo find / -perm /4000
+```
 
+🌞 Rendre le fichier dont_readme.txt immuable
 
-
-
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo chattr +i TP/dont_read.txt
+chattr: No such file or directory while trying to stat TP/dont_read.txt
+[hugo@efrei-xmg4agau1 ~]$ sudo chattr +i TP/dont_readme.txt
+[hugo@efrei-xmg4agau1 ~]$ sudo rm dont_readme.txt
+rm: cannot remove 'dont_readme.txt': No such file or directory
+[hugo@efrei-xmg4agau1 ~]$ sudo -u root rm TP/dont_readme.txt
+rm: cannot remove 'TP/dont_readme.txt': Operation not permitted
+```
 
 
 
