@@ -247,7 +247,7 @@ tmpfs                                tmpfs     178M     0  178M   0% /run/user/1
 🌞 Remplissez votre partition /home
 
 ```
-[hugo@efrei-xmg4agau1 ~]$ dd if=/dev/zero of=/home/bingo/bigfile bs=4M count=2500
+[hugo@efrei-xmg4agau1 ~]$ dd if=/dev/zero of=/home/hugo/bigfile bs=4M count=2500
 dd: error writing '/home/hugo/bigfile': No space left on device
 696+0 records in
 695+0 records out
@@ -428,7 +428,7 @@ A. Master what already exists
 🌞 Lister tous les processus qui sont actuellement en cours d'exécution, lancés par votre utilisateur
 
 ```
-[hugo@efrei-xmg4agau1 ~]$ ps -fu bingo
+[hugo@efrei-xmg4agau1 ~]$ ps -fu hugo
 ```
 
 🌞 Déterminer le hash du mot de passe de root
@@ -532,7 +532,7 @@ meow ALL=(meow) NOPASSWD: /bin/ls, /bin/cat, /bin/less, /bin/more
 [hugo@efrei-xmg4agau1 ~]$ ls -ld /root
 dr-xr-x---. 3 root root 4096 Feb 18 10:35 /root
 [hugo@efrei-xmg4agau1 ~]$ ls -ld $home
-drwx------. 2 bingo bingo 4096 Feb 17 15:59 .
+drwx------. 2 hugo hugo 4096 Feb 17 15:59 .
 [hugo@efrei-xmg4agau1 ~]$ ls -l /usr/bin/ls
 -rwxr-xr-x. 1 root root 140952 Nov  6 17:29 /usr/bin/ls
 [hugo@efrei-xmg4agau1 ~]$ ls -l /usr/bin/systemctl
@@ -580,6 +580,175 @@ rm: cannot remove 'dont_readme.txt': No such file or directory
 [hugo@efrei-xmg4agau1 ~]$ sudo -u root rm TP/dont_readme.txt
 rm: cannot remove 'TP/dont_readme.txt': Operation not permitted
 ```
+
+
+Part V : OpenSSH Server
+
+1. Basics
+🌞 Afficher l'identifiant du processus serveur OpenSSH en cours d'exécution
+
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo systemctl status sshd | grep PID
+   Main PID: 1295 (sshd)
+```
+
+🌞 Changer le port d'écoute du serveur OpenSSH
+apres avoir changer dans /etc/ssh/sshd_config en mettant port 2222
+
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo ss -tuln | grep 2222
+tcp   LISTEN 0      128        10.1.1.11:2222      0.0.0.0:*
+```
+après rajouter le port dans le firewall
+
+```
+PS C:\Users\hugoc> ssh hugo@10.1.1.11 -p 2222
+hugo@10.1.1.11's password:
+Last login: Tue Feb 18 12:42:11 2025
+```
+
+2. Authentication modes
+
+A. Key-based authentication
+🌞 Configurer une authentification par clé
+
+```
+[hugo@efrei-xmg4agau1 ~]$ mkdir .ssh
+[hugo@efrei-xmg4agau1 ~]$ suno nano .ssh/authorized_keys
+-bash: suno: command not found
+[hugo@efrei-xmg4agau1 ~]$ sudo nano .ssh/authorized_keys
+```
+
+et je met la clé ssh de mon pc dans le fichier
+🌞 Désactiver la connexion par password
+
+```
+PasswordAuthentication no
+```
+
+🌞 Désactiver la connexion en tant que root
+
+```
+PermitRootLogin no
+```
+
+4. Further hardening
+🌞 Proposer au moins 5 configurations supplémentaires qui permettent de renforcer la sécurité du serveur OpenSSH
+
+```
+
+PasswordAuthentication no
+PermitEmptyPasswords no
+LoginGraceTime 20
+MaxAuthTries 3
+MaxSessions 1
+AllowAgentForwarding no
+AllowTcpForwarding no
+X11Forwarding no
+PermitTunnel no
+```
+
+5. fail2ban
+🌞 Installer fail2ban sur la machine
+
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo systemctl status fail2ban
+● fail2ban.service - Fail2Ban Service
+     Loaded: loaded (/usr/lib/systemd/system/fail2ban.service; enabled; preset: disabled)
+     Active: active (running) since Tue 2025-02-18 14:02:12 CET; 7s ago
+```
+
+🌞 Configurer fail2ban
+dans le fichier /etc/fail2ban/jail.local :
+
+```
+[sshd]
+enabled = true
+maxretry = 7
+findtime = 300
+bantime = 3600
+```
+
+🌞 Prouvez que fail2ban est effectif
+
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo fail2ban-client status sshd
+Status for the jail: sshd
+|- Filter
+|  |- Currently failed: 1
+|  |- Total failed:     14
+|  `- Journal matches:  _SYSTEMD_UNIT=sshd.service + _COMM=sshd + _COMM=sshd-session
+`- Actions
+   |- Currently banned: 1
+   |- Total banned:     1
+   `- Banned IP list:   10.1.1.1
+
+[hugo@efrei-xmg4agau1 ~]$ sudo fail2ban-client set sshd unbanip 10.1.1.1
+1
+```
+
+6. Automatisation
+🌞 Ecrire le script harden.sh
+
+```
+#!/bin/bash
+
+#openssh
+echo '[+] Checking if openssh is running...'
+
+if systemctl is-active --quiet sshd;
+then
+    echo " - openssh is running"
+else
+    echo " - opnssh is not running"
+    exit 2
+fi
+
+# ssh port
+SSH_PORT=$(sudo cat /etc/ssh/sshd_config | grep -w Port | cut -d' ' -f2)
+echo '[+] Checking if ssh is using port 22...'
+
+if [ "$SSH_PORT" == "22" ]; then
+    echo " - /!\ it is"
+else
+    echo " - it is not, using $SSH_PORT"
+fi
+
+# fail2ban
+echo '[+] Checking if fail2ban is running...'
+
+if systemctl is-active --quiet sshd;
+then
+    echo " - fail2ban is running"
+    echo '[+] Checking if fail2ban is monitoring openssh logs...'
+        if sudo fail2ban-client status sshd &>/dev/null; then
+            echo " - it is"
+        else
+            echo " - it is not"
+    fi
+else
+    echo " - fail2ban is not running"
+    exit 2
+fi
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
