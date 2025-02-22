@@ -198,6 +198,117 @@ tcp     LISTEN   0        128              10.1.1.11:22              0.0.0.0:*  
 ```
 
 
+Part III : Storage is still disks in 2025
+
+1. LVM
+
+🌞 Afficher l'état actuel de LVM
+
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo pvscan
+[sudo] password for hugo:
+  PV /dev/sda2   VG rl_efrei-xmg4agau1   lvm2 [19.00 GiB / 4.00 MiB free]
+  Total: 1 [19.00 GiB] / in use: 1 [19.00 GiB] / in no VG: 0 [0   ]
+[bingo@node1 ~]$ sudo lvscan
+  ACTIVE            '/dev/rl_efrei-xmg4agau1/home' [3.00 GiB] inherit
+  ACTIVE            '/dev/rl_efrei-xmg4agau1/root' [10.00 GiB] inherit
+  ACTIVE            '/dev/rl_efrei-xmg4agau1/var' [<5.00 GiB] inherit
+  ACTIVE            '/dev/rl_efrei-xmg4agau1/swap' [1.00 GiB] inherit
+[hugo@efrei-xmg4agau1 ~]$ sudo vgscan
+  Found volume group "rl_efrei-xmg4agau1" using metadata type lvm2
+
+```
+
+```
+[hugo@efrei-xmg4agau1 ~]$ df -Th
+Filesystem                           Type      Size  Used Avail Use% Mounted on
+devtmpfs                             devtmpfs  4.0M     0  4.0M   0% /dev
+tmpfs                                tmpfs     888M     0  888M   0% /dev/shm
+tmpfs                                tmpfs     355M  5.0M  350M   2% /run
+/dev/mapper/rl_efrei--xmg4agau1-root ext4      9.8G  1.3G  8.0G  14% /
+/dev/sda1                            xfs       957M  313M  645M  33% /boot
+/dev/mapper/rl_efrei--xmg4agau1-var  ext4      4.9G  215M  4.4G   5% /var
+/dev/mapper/rl_efrei--xmg4agau1-home ext4      2.9G   48K  2.8G   1% /home
+tmpfs                                tmpfs     178M     0  178M   0% /run/user/1000
+
+```
+
+🌞 Déterminer le type de système de fichiers
+
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo blkid /dev/mapper/rl_efrei--xmg4agau1-root
+/dev/mapper/rl_efrei--xmg4agau1-root: UUID="60960449-2ca3-4c46-929e-87c426bf7852" TYPE="ext4"
+[bingo@node1 ~]$ sudo blkid /dev/mapper/rl_efrei--xmg4agau1-home
+/dev/mapper/rl_efrei--xmg4agau1-home: UUID="479c7f2a-32f5-48fd-a868-3943a878d08a" TYPE="ext4"
+
+```
+
+2. HELP my partition is full
+🌞 Remplissez votre partition /home
+
+```
+[hugo@efrei-xmg4agau1 ~]$ dd if=/dev/zero of=/home/bingo/bigfile bs=4M count=2500
+dd: error writing '/home/hugo/bigfile': No space left on device
+696+0 records in
+695+0 records out
+2916237312 bytes (2.9 GB, 2.7 GiB) copied, 17.6197 s, 166 MB/s
+
+```
+🌞 Constater que la partition est pleine
+
+```
+[hugo@efrei-xmg4agau1 ~]$ df -h
+Filesystem                            Size  Used Avail Use% Mounted on
+devtmpfs                              4.0M     0  4.0M   0% /dev
+tmpfs                                 888M     0  888M   0% /dev/shm
+tmpfs                                 355M  5.0M  350M   2% /run
+/dev/mapper/rl_efrei--xmg4agau1-root  9.8G  1.3G  8.0G  14% /
+/dev/sda1                             957M  313M  645M  33% /boot
+/dev/mapper/rl_efrei--xmg4agau1-var   4.9G  215M  4.4G   5% /var
+/dev/mapper/rl_efrei--xmg4agau1-home  2.9G  2.8G     0 100% /home
+tmpfs                                 178M     0  178M   0% /run/user/1000
+
+```
+🌞 Agrandir la partition
+
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo lvextend -L +10G /dev/rl_efrei-xmg4agau1/home
+  Insufficient free space: 2560 extents needed, but only 1 available
+[hugo@efrei-xmg4agau1 ~]$ sudo lvextend -l +100%FREE /dev/rl_efrei-xmg4agau1/home
+  Size of logical volume rl_efrei-xmg4agau1/home changed from 3.00 GiB (768 extents) to 3.00 GiB (769 extents).
+  Logical volume rl_efrei-xmg4agau1/home successfully resized.
+
+```
+
+
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo resize2fs /dev/rl_efrei-xmg4agau1/home
+[sudo] password for hugo:
+resize2fs 1.46.5 (30-Dec-2021)
+Filesystem at /dev/rl_efrei-xmg4agau1/home is mounted on /home; on-line resizing required
+old_desc_blocks = 1, new_desc_blocks = 1
+The filesystem on /dev/rl_efrei-xmg4agau1/home is now 787456 (4k) blocks long.
+
+[hugo@efrei-xmg4agau1 ~]$ df -h
+Filesystem                            Size  Used Avail Use% Mounted on
+devtmpfs                              4.0M     0  4.0M   0% /dev
+tmpfs                                 888M     0  888M   0% /dev/shm
+tmpfs                                 355M  5.0M  350M   2% /run
+/dev/mapper/rl_efrei--xmg4agau1-root  9.8G  1.3G  8.0G  14% /
+/dev/sda1                             957M  313M  645M  33% /boot
+/dev/mapper/rl_efrei--xmg4agau1-var   4.9G  215M  4.4G   5% /var
+/dev/mapper/rl_efrei--xmg4agau1-home  2.9G  2.8G  1.9M 100% /home
+tmpfs                                 178M     0  178M   0% /run/user/1000
+
+```
+
+
+
+
+
+
+
+
 
 
 
