@@ -209,7 +209,7 @@ Part III : Storage is still disks in 2025
 [sudo] password for hugo:
   PV /dev/sda2   VG rl_efrei-xmg4agau1   lvm2 [19.00 GiB / 4.00 MiB free]
   Total: 1 [19.00 GiB] / in use: 1 [19.00 GiB] / in no VG: 0 [0   ]
-[bingo@node1 ~]$ sudo lvscan
+[hugo@efrei-xmg4agau1 ~]$ sudo lvscan
   ACTIVE            '/dev/rl_efrei-xmg4agau1/home' [3.00 GiB] inherit
   ACTIVE            '/dev/rl_efrei-xmg4agau1/root' [10.00 GiB] inherit
   ACTIVE            '/dev/rl_efrei-xmg4agau1/var' [<5.00 GiB] inherit
@@ -238,7 +238,7 @@ tmpfs                                tmpfs     178M     0  178M   0% /run/user/1
 ```
 [hugo@efrei-xmg4agau1 ~]$ sudo blkid /dev/mapper/rl_efrei--xmg4agau1-root
 /dev/mapper/rl_efrei--xmg4agau1-root: UUID="60960449-2ca3-4c46-929e-87c426bf7852" TYPE="ext4"
-[bingo@node1 ~]$ sudo blkid /dev/mapper/rl_efrei--xmg4agau1-home
+[hugo@efrei-xmg4agau1 ~]$ sudo blkid /dev/mapper/rl_efrei--xmg4agau1-home
 /dev/mapper/rl_efrei--xmg4agau1-home: UUID="479c7f2a-32f5-48fd-a868-3943a878d08a" TYPE="ext4"
 
 ```
@@ -301,12 +301,74 @@ tmpfs                                 355M  5.0M  350M   2% /run
 tmpfs                                 178M     0  178M   0% /run/user/1000
 
 ```
+🌞 Remplissez votre partition /home
+➜ Eteignez la VM et ajoutez lui un disque de 40G
+🌞 Utiliser ce nouveau disque pour étendre la partition /home de 20G
 
 
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo vgextend rl_efrei-xmg4agau1 /dev/sdb1
+  WARNING: adding device /dev/sdb1 with idname t10.ATA_VBOX_HARDDISK_VBdd91d800-d692a3c3 which is already used for /dev/sdb.
+  Volume group "rl_efrei-xmg4agau1" successfully extended
+[hugo@efrei-xmg4agau1 ~]$ lsblk
+NAME                         MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+sda                            8:0    0   20G  0 disk
+├─sda1                         8:1    0 1021M  0 part /boot
+└─sda2                         8:2    0   19G  0 part
+  ├─rl_efrei--xmg4agau1-root 253:0    0   10G  0 lvm  /
+  ├─rl_efrei--xmg4agau1-swap 253:1    0    1G  0 lvm  [SWAP]
+  ├─rl_efrei--xmg4agau1-home 253:2    0    3G  0 lvm  /home
+  └─rl_efrei--xmg4agau1-var  253:3    0    5G  0 lvm  /var
+sdb                            8:16   0   40G  0 disk
+└─sdb1                         8:17   0   20G  0 part
+sr0                           11:0    1 1024M  0 rom
+[hugo@efrei-xmg4agau1 ~]$ sudo lvextend -L +20G /dev/rl_efrei-xmg4agau1/home
+  Insufficient free space: 5120 extents needed, but only 5119 available
+[hugo@efrei-xmg4agau1 ~]$ sudo lvextend -L +19G /dev/rl_efrei-xmg4agau1/home
+  Size of logical volume rl_efrei-xmg4agau1/home changed from 3.00 GiB (769 extents) to 22.00 GiB (5633 extents).
+  Logical volume rl_efrei-xmg4agau1/home successfully resized.
 
+```
 
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo resize2fs /dev/rl_efrei-xmg4agau1/home
+resize2fs 1.46.5 (30-Dec-2021)
+Filesystem at /dev/rl_efrei-xmg4agau1/home is mounted on /home; on-line resizing required
+old_desc_blocks = 1, new_desc_blocks = 3
+The filesystem on /dev/rl_efrei-xmg4agau1/home is now 5768192 (4k) blocks long.
 
+[hugo@efrei-xmg4agau1 ~]$ lsblk
+NAME                         MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+sda                            8:0    0   20G  0 disk
+├─sda1                         8:1    0 1021M  0 part /boot
+└─sda2                         8:2    0   19G  0 part
+  ├─rl_efrei--xmg4agau1-root 253:0    0   10G  0 lvm  /
+  ├─rl_efrei--xmg4agau1-swap 253:1    0    1G  0 lvm  [SWAP]
+  ├─rl_efrei--xmg4agau1-home 253:2    0   22G  0 lvm  /home
+  └─rl_efrei--xmg4agau1-var  253:3    0    5G  0 lvm  /var
+sdb                            8:16   0   40G  0 disk
+└─sdb1                         8:17   0   20G  0 part
+  └─rl_efrei--xmg4agau1-home 253:2    0   22G  0 lvm  /home
+sr0                           11:0    1 1024M  0 rom
+```
 
+3. Prepare another partition
+Cette partition contiendra des fichiers HTML pour des sites web (fictifs).
+🌞 Créez une nouvelle partition
+
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo pvcreate /dev/sdb2
+  WARNING: adding device /dev/sdb2 with idname t10.ATA_VBOX_HARDDISK_VBdd91d800-d692a3c3 which is already used for /dev/sdb.
+  Physical volume "/dev/sdb2" successfully created.
+[hugo@efrei-xmg4agau1 ~]$ sudo vgextend rl_efrei-xmg4agau1 /dev/sdb2
+  WARNING: adding device /dev/sdb2 with idname t10.ATA_VBOX_HARDDISK_VBdd91d800-d692a3c3 which is already used for /dev/sdb.
+  Volume group "rl_efrei-xmg4agau1" successfully extended
+[hugo@efrei-xmg4agau1 ~]$ sudo vgs
+  VG                 #PV #LV #SN Attr   VSize  VFree
+  rl_efrei-xmg4agau1   3   4   0 wz--n- 58.99g 20.99g
+[hugo@efrei-xmg4agau1 ~]$ sudo lvcreate -L 20G -n web rl_efrei-xmg4agau1
+  Logical volume "web" created.
+```
 
 
 
