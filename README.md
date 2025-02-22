@@ -405,6 +405,100 @@ Writing superblocks and filesystem accounting information: done
 ```
 
 
+Part IV : User management
+
+1. Users
+
+A. Master what already exists
+🌞 Déterminer l'existant :
+
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo cat /etc/passwd
+[hugo@efrei-xmg4agau1 ~]$ cat /etc/group
+[hugo@efrei-xmg4agau1 ~]$ groups
+
+```
+
+🌞 Lister tous les processus qui sont actuellement en cours d'exécution, lancés par root
+
+```
+[hugo@efrei-xmg4agau1 ~]$ ps -fu root
+```
+
+🌞 Lister tous les processus qui sont actuellement en cours d'exécution, lancés par votre utilisateur
+
+```
+[hugo@efrei-xmg4agau1 ~]$ ps -fu bingo
+```
+
+🌞 Déterminer le hash du mot de passe de root
+
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo cat /etc/shadow | grep root
+[sudo] password for hugo:
+root:$6$Cf0RGoL.Bt85OmAD$kXOF9heB6ZscSdRSMNurVAaW6PWlyg6S0D4DqZSCfA1LICg.6LeDWQFEjGcOQOAW5tH2XpgeBhoB8qwWw9cSp/::0:99999:7:::
+```
+
+🌞 Déterminer le hash du mot de passe de votre utilisateur
+
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo cat /etc/shadow | grep hugo
+hugo:$6$GpZivaxZDNIId.Bu$/mqy48vNurYmHJyzFAbaFqqIyApcZ3sYETpwDnHqv6bBeM/Sw3rGLjsrdfvvzrO.M9C5L5VOn4feuuOZum5i3/::0:99999:7:::
+```
+
+🌞 Déterminer la fonction de hachage qui a été utilisée
+
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo cat /etc/shadow | grep hugo | cut -d':' -f1,2
+[sudo] password for hugo:
+hugo:$6$GpZivaxZDNIId.Bu$/mqy48vNurYmHJyzFAbaFqqIyApcZ3sYETpwDnHqv6bBeM/Sw3rGLjsrdfvvzrO.M9C5L5VOn4feuuOZum5i3/
+```
+
+6 est donc la fontion de hachage
+🌞 Déterminer, pour l'utilisateur root :
+
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo cat /etc/passwd | grep  root:x | cut -d':' -f1,7
+[sudo] password for hugo:
+root:/bin/bash
+```
+
+
+🌞 Déterminer, pour votre utilisateur :
+
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo cat /etc/passwd | grep  hugo:x | cut -d':' -f1,7
+hugo:/bin/bash
+```
+
+
+🌞 Afficher la ligne de configuration du fichier sudoers qui permet à votre utilisateur d'utiliser sudo
+
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo cat /etc/sudoers | grep %wheel
+[sudo] password for hugo:
+%wheel  ALL=(ALL)       ALL
+# %wheel        ALL=(ALL)       NOPASSWD: ALL
+
+```
+
+B. User creation and configuration
+🌞 Créer un utilisateur :
+
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo useradd -M -N -g admins -s /sbin/nologin meow
+```
+
+🌞 Configuration sudoers
+dans /etc/sudoers
+
+```
+meow ALL=(hugo) NOPASSWD: /bin/ls, /bin/cat, /bin/less, /bin/more
+
+%admins ALL=(ALL) NOPASSWD: /usr/bin/apt
+
+hugo ALL=(ALL)  NOPASSWD:ALL
+```
 
 
 
@@ -412,6 +506,25 @@ Writing superblocks and filesystem accounting information: done
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
 
 
 
