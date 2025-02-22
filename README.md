@@ -371,15 +371,38 @@ Cette partition contiendra des fichiers HTML pour des sites web (fictifs).
 ```
 
 
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo mkfs.ext4 /dev/rl_efrei-xmg4agau1/web
+mke2fs 1.46.5 (30-Dec-2021)
+Creating filesystem with 5242880 4k blocks and 1310720 inodes
+Filesystem UUID: ef9f9946-06bb-4d03-8bdc-ad1e33fa2c20
+Superblock backups stored on blocks:
+        32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208,
+        4096000
+
+Allocating group tables: done
+Writing inode tables: done
+Creating journal (32768 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+```
 
 
 
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo mkdir -p /var/www
+[hugo@efrei-xmg4agau1 ~]$ sudo mount /dev/rl_efrei-xmg4agau1/web /var/www
+[hugo@efrei-xmg4agau1 ~]$ df -h | grep /var/www
+/dev/mapper/rl_efrei--xmg4agau1-web    20G   24K   19G   1% /var/www
+```
 
 
+🌞 Proposez au moins une option de montage
 
+```
+[hugo@efrei-xmg4agau1 ~]$ sudo mount -o noexec /dev/rl_efrei-xmg4agau1/web /var/www
 
-
-
+```
 
 
 
